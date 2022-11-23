@@ -2,35 +2,39 @@
 import org.hyperskill.hstest.stage.StageTest
 import org.hyperskill.hstest.testcase.CheckResult
 
+private val allLetters = (('a'..'z') + ('A'..'Z')).joinToString("")
 
-class Task3Test : StageTest<InputClue>() {
+class Task4Test : StageTest<InputClue>() {
 
     override fun generate() = listOf(
-            inputCase("Bill Gates\nVIP",
+            inputCase("Ian One\nVIP",
                     hint = "This test corresponds to the example #1."),
 
-            inputCase("Tom Smith\nWorker",
+            inputCase("A b\nlong participant",
                     hint = "This test corresponds to the example #2."),
 
-            inputCase("Mr Anonimous\nParticipant",
-                    hint = "This test corresponds to the example #3."),
+            inputCase("Bill Gates\nVIP"),
+            inputCase("Tom Smith\nWorker"),
+            inputCase("Mr Anonimous\nParticipant"),
 
-            inputCase("X Y\nVeryVeryLoooooooooongSatus",
-                    hint = "This test checks a long status with even length."),
+            inputCase("X Y\nAbcdAbcdAbcdAbcd", true,
+                    "This test checks a long status with even length."),
 
-            inputCase("X Y\nVeryVeryLooooooooooongSatus", true,
+            inputCase("X Y\nAbcdAbcdAbcdAbcdA", true,
                     "This test checks a long status with uneven length."),
 
             inputCase("X Y\nStatus  with spaces",
-                    hint = "Status should be printed with the " +
-                            "same spaces as original, but name " +
-                            "and surname shouldn't contain spaces."),
+                    hint = "Status should be printed with " +
+                            "the same spaces as original, but " +
+                            "name and surname shouldn't contain spaces."),
 
-            inputCase("X Y\nStatus with   spaces!!!", true),
+            inputCase("$allLetters Ivan\nHello", true,
+                    hint = "This test checks all possible letters for name."),
 
-            inputCase(('a'..'z').joinToString("") + " Ivan\nHello", true,
-                    hint = "This test checks all possible letters.")
+            inputCase("Ivan Ivan\n$allLetters", true,
+                    hint = "This test checks all possible letters for status.")
     )
+
 
     private inline fun checkBadgeBorder(badge: String, onFailure: (msg: String) -> Unit) {
         val lines = badge.split("\n")
@@ -43,12 +47,12 @@ class Task3Test : StageTest<InputClue>() {
             onFailure("Your border is not rectangular.")
             return
         }
-        if (lines.first().any { it != '*' } || lines.last() != lines.first()) {
-            onFailure("Your top and bottom edges don't consist of '*'.")
+        if (lines.first().any { it != '8' } || lines.last() != lines.first()) {
+            onFailure("Your top and bottom edges don't consist of '8'.")
             return
         }
-        if (!lines.drop(1).dropLast(1).all { it.startsWith("* ") && it.endsWith(" *") }) {
-            onFailure("Your left and right edges don't consist of '*' with one space padding..")
+        if (!lines.drop(1).dropLast(1).all { it.startsWith("88  ") && it.endsWith("  88") }) {
+            onFailure("Your left and right edges don't consist of \"88\" with two spaces padding.")
             return
         }
     }
@@ -65,21 +69,22 @@ class Task3Test : StageTest<InputClue>() {
 
         userLines.zip(authorLines)
                 .forEach { (userStr, authorStr) ->
-                    if (userStr.trim('*', ' ') != authorStr.trim('*', ' ')) {
-                        onFailure("Some line in your signature is incorrect.")
+                    if (userStr.trim('8', ' ') != authorStr.trim('8', ' ')) {
+                        onFailure("Some line in your signature is incorrect. " +
+                                "Your output: \n\"$user\" \nCorrect output:\n\"$author\"")
                         return
                     } else if (userStr != authorStr) {
-                        onFailure("Some indentation in your signature is incorrect.")
+                        onFailure("Some indentation in your signature is incorrect. " +
+                                "Your output: \n\"$user\" \nCorrect output:\n\"$author\"")
                         return
                     }
                 }
     }
 
-
     override fun check(reply: String, clue: InputClue): CheckResult {
-        val badgeStart = reply.indexOf('*')
+        val badgeStart = reply.indexOf('8')
         if (badgeStart == -1) {
-            return CheckResult.wrong("Your output doesn't contain a signature, wrapped in '*' symbols.")
+            return CheckResult.wrong("Your output doesn't contain a signature, wrapped in '8' symbols.")
         }
 
         val userBadge = reply
@@ -96,7 +101,6 @@ class Task3Test : StageTest<InputClue>() {
             val (name, status) = clue.input.split("\n")
             return clue.toFailure("Wrong output for input lines \"$name\" and \"$status\". $errorMessage")
         }
-
         return CheckResult.correct()
     }
 }

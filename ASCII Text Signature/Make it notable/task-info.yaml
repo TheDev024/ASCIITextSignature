@@ -245,25 +245,5 @@ files:
 
   learner_created: false
 feedback_link: https://hyperskill.org/learn/step/6175#comment
-status: Failed
-feedback:
-  message: |-
-    Wrong answer in test #2
-
-    Wrong output for input lines &quot;Tom Smith&quot; and &quot;Worker&quot;. Some line in your signature is incorrect. This test corresponds to the example #2.
-
-    Please find below the output of your program during this failed test.
-    Note that the &#39;&gt;&#39; character indicates the beginning of the input line.
-
-    ---
-
-    Enter name and surname: &gt; Tom Smith
-    Enter person&#39;s status: &gt; Worker
-    *********************************************
-    *  ___ ____ _  _      ____ _  _ _ ___ _  _  *
-    *   |  |  | |\/|      [__  |\/| |  |  |__|  *
-    *   |  |__| |  |      ___] |  | |  |  |  |  *
-    *                  WORKER                   *
-    *********************************************
-  time: "Tue, 22 Nov 2022 08:28:05 UTC"
-record: -1
+status: Solved
+record: 3

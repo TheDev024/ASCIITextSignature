@@ -6,7 +6,7 @@ val scanner = Scanner(System.`in`)
 val letters = mapOf(
     'A' to listOf("____", "|__|", "|  |"),
     'B' to listOf("___ ", "|__]", "|__]"),
-    'C' to listOf("____", "|__|", "|___"),
+    'C' to listOf("____", "|   ", "|___"),
     'D' to listOf("___ ", "|  \\", "|__/"),
     'E' to listOf("____", "|___", "|___"),
     'F' to listOf("____", "|___", "|   "),
@@ -20,7 +20,7 @@ val letters = mapOf(
     'N' to listOf("_  _", "|\\ |", "| \\|"),
     'O' to listOf("____", "|  |", "|__|"),
     'P' to listOf("___ ", "|__]", "|   "),
-    'Q' to listOf("____", "|__|", "|_\\|"),
+    'Q' to listOf("____", "|  |", "|_\\|"),
     'R' to listOf("____", "|__/", "|  \\"),
     'S' to listOf("____", "[__ ", "___]"),
     'T' to listOf("___", " | ", " | "),
@@ -45,15 +45,17 @@ class ASCIITextSignature {
 
     private fun createTag(fullName: String, status: String): String {
         var tag = ""
-        var size = 0
-        fullName.uppercase().forEach { size += if (it.isLetter()) letters[it]!![0].length else 6 }
-        size += fullName.length + 1
-        val pattern = "*".repeat(size + 2) + '\n'
-        tag += pattern
-        for (i in 0..2) tag += "*  " + fullName.uppercase().map { if (it == ' ') " ".repeat(4) else letters[it]!![i] }
-            .joinToString(" ") + "  *" + '\n'
-        val centerAlign = size / 2 - status.length / 2
-        tag += "*" + " ".repeat(centerAlign) + status.uppercase() + " ".repeat(size - (centerAlign + status.length)) + "*\n" + pattern
+        var fullNameSize = 0
+        fullName.uppercase().forEach { fullNameSize += if (it.isLetter()) letters[it]!![0].length else 4 }
+        fullNameSize += fullName.length - 1
+        val size = if (fullNameSize > status.length) fullNameSize else status.length
+        val fullNameAlign = (size - fullNameSize) / 2
+        val statusAlign = (size - status.length) / 2
+        val pattern = "*".repeat(size + 6)
+        tag += pattern + '\n'
+        for (i in 0..2) tag += "*  " + " ".repeat(fullNameAlign) + fullName.uppercase().map { if (it == ' ') " ".repeat(4) else letters[it]!![i] }
+            .joinToString(" ") + " ".repeat(size - (fullNameAlign + fullNameSize)) + "  *" + '\n'
+        tag += "*  " + " ".repeat(statusAlign) + status + " ".repeat(size - (statusAlign + status.length)) + "  *\n" + pattern
         return tag
     }
 }
