@@ -1046,25 +1046,9 @@ files:
 
   learner_created: false
 feedback_link: https://hyperskill.org/learn/step/6176#comment
-status: Failed
+status: Solved
 feedback:
-  message: |-
-    Wrong answer in test #1
-
-    Your output doesn&#39;t contain a signature, wrapped in &#39;8&#39; symbols.
-
-    Please find below the output of your program during this failed test.
-    Note that the &#39;&gt;&#39; character indicates the beginning of the input line.
-
-    ---
-
-    Enter name and surname: &gt; Ian One
-    Enter person&#39;s status: &gt; VIP
-    *************************************
-    *  _ ____ _  _      ____ _  _ ____  *
-    *  | |__| |\ |      |  | |\ | |___  *
-    *  | |  | | \|      |__| | \| |___  *
-    *                VIP                *
-    *************************************
-  time: "Wed, 23 Nov 2022 04:10:30 UTC"
+  message: Well done! You've finished the project. Select a new project on <a href="https://hyperskill.org/projects">JetBrains
+    Academy</a> to continue learning.
+  time: "Wed, 23 Nov 2022 07:11:47 UTC"
 record: -1

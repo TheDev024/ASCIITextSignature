@@ -1,38 +1,40 @@
 package signature
 
+import java.io.File
 import java.util.*
 
 val scanner = Scanner(System.`in`)
-val letters = mapOf(
-    'A' to listOf("____", "|__|", "|  |"),
-    'B' to listOf("___ ", "|__]", "|__]"),
-    'C' to listOf("____", "|   ", "|___"),
-    'D' to listOf("___ ", "|  \\", "|__/"),
-    'E' to listOf("____", "|___", "|___"),
-    'F' to listOf("____", "|___", "|   "),
-    'G' to listOf("____", "| __", "|__]"),
-    'H' to listOf("_  _", "|__|", "|  |"),
-    'I' to listOf("_", "|", "|"),
-    'J' to listOf(" _", " |", "_|"),
-    'K' to listOf("_  _", "|_/ ", "| \\_"),
-    'L' to listOf("_   ", "|   ", "|___"),
-    'M' to listOf("_  _", "|\\/|", "|  |"),
-    'N' to listOf("_  _", "|\\ |", "| \\|"),
-    'O' to listOf("____", "|  |", "|__|"),
-    'P' to listOf("___ ", "|__]", "|   "),
-    'Q' to listOf("____", "|  |", "|_\\|"),
-    'R' to listOf("____", "|__/", "|  \\"),
-    'S' to listOf("____", "[__ ", "___]"),
-    'T' to listOf("___", " | ", " | "),
-    'U' to listOf("_  _", "|  |", "|__|"),
-    'V' to listOf("_  _", "|  |", " \\/ "),
-    'W' to listOf("_ _ _", "| | |", "|_|_|"),
-    'X' to listOf("_  _", " \\/ ", "_/\\_"),
-    'Y' to listOf("_   _", " \\_/ ", "  |  "),
-    'Z' to listOf("___ ", "  / ", " /__")
-)
 
 class ASCIITextSignature {
+
+    private var mediumFont = mapOf<Char, List<String>>()
+    private var romanFont = mapOf<Char, List<String>>()
+
+    init {
+        val mediumFile = File("medium.txt")
+        val romanFile = File("roman.txt")
+
+        val mediumList = mediumFile.readLines()
+        val romanList = romanFile.readLines()
+
+        var i = 1
+
+        while (i < romanList.size) {
+            romanFont = romanFont.plus(mapOf(romanList[i][0] to romanList.subList(i + 1, i + 11)))
+            i += 11
+        }
+
+        i = 1
+
+        while (i < mediumList.size) {
+            mediumFont = mediumFont.plus(mapOf(mediumList[i][0] to mediumList.subList(i + 1, i + 4)))
+            i += 4
+        }
+
+        mediumFont = mediumFont.plus(mapOf(' ' to List(3){ " ".repeat(5) }))
+        romanFont = romanFont.plus(mapOf(' ' to List(10){ " ".repeat(10) }))
+    }
+
     fun cmd() {
         print("Enter name and surname: ")
         val fullName = scanner.nextLine()
@@ -46,16 +48,26 @@ class ASCIITextSignature {
     private fun createTag(fullName: String, status: String): String {
         var tag = ""
         var fullNameSize = 0
-        fullName.uppercase().forEach { fullNameSize += if (it.isLetter()) letters[it]!![0].length else 4 }
-        fullNameSize += fullName.length - 1
-        val size = if (fullNameSize > status.length) fullNameSize else status.length
+        fullName.forEach { fullNameSize += romanFont[it]!![0].length }
+        var statusSize = 0
+        status.forEach { statusSize += mediumFont[it]!![0].length }
+        val size = maxOf(fullNameSize, statusSize)
         val fullNameAlign = (size - fullNameSize) / 2
-        val statusAlign = (size - status.length) / 2
-        val pattern = "*".repeat(size + 6)
+        val statusAlign = (size - statusSize) / 2
+        val pattern = "8".repeat(size + 8)
         tag += pattern + '\n'
-        for (i in 0..2) tag += "*  " + " ".repeat(fullNameAlign) + fullName.uppercase().map { if (it == ' ') " ".repeat(4) else letters[it]!![i] }
-            .joinToString(" ") + " ".repeat(size - (fullNameAlign + fullNameSize)) + "  *" + '\n'
-        tag += "*  " + " ".repeat(statusAlign) + status + " ".repeat(size - (statusAlign + status.length)) + "  *\n" + pattern
+        repeat(10) { j ->
+            tag += "88  " + " ".repeat(fullNameAlign) + fullName.map { romanFont[it]!![j] }.joinToString("") + " ".repeat(
+                size - (fullNameAlign + fullNameSize)
+            ) + "  88" + '\n'
+        }
+        // tag += ("88  " + " ".repeat(size) + "  88" + '\n').repeat(3)
+        repeat(3) { j ->
+            tag += "88  " + " ".repeat(statusAlign) + status.map { mediumFont[it]!![j] }.joinToString("") + " ".repeat(
+                size - (statusAlign + statusSize)
+            ) + "  88" + '\n'
+        }
+        tag += pattern
         return tag
     }
 }
